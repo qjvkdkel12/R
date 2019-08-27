@@ -62,7 +62,7 @@ ggplot(data = top20, aes(x = word, y = freq)) +
   geom_text(aes(label = freq), hjust = -0.3) # 빈도 표시
 
 
-# 오똔 던오거 먾아 사용됐는지 한눈에 파악하도록 워드 클라우드를 만들어보자.
+# 어떤 단어가  사용됐는지 한눈에 파악하도록 워드 클라우드를 만들어보자.
 pal <- brewer.pal(8, "Dark2") # 색상 목록 생성
 set.seed(1234) # 난수 고정
 
