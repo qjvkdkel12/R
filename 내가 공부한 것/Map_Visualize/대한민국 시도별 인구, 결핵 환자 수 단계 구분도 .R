@@ -1,7 +1,7 @@
 # 대한민국 시도별 인구 단계 구분도를 위한 kormaps2014패키지를 이용하기 위한 stringi 패키지 설치
 install.packages("stringi")
 
-# install_github()를 이용해 책에 공유한 kormaps2014를 설치하고 로드해보자.
+# install_github()를 이용해 "Do It R"책에 공유한 kormaps2014를 설치하고 로드해보자.
 install.packages("devtools")
 devtools::install_github("cardiomoon/kormaps2014")
 library(kormaps2014)
