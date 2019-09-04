@@ -1,0 +1,127 @@
+---
+title: "일주일간 치킨집 통화건수에 대한 데이터 분석"
+output:
+  html_document:
+    df_print: paged
+---
+
+### 분석을 위한 라이브러리 실행
+
+```{r, eval = TRUE}
+library(ggplot2)
+library(plyr)
+library(dplyr)
+library(readxl)
+library(knitr)
+# install.packages("pandoc")
+#knit("Data.Rmd", encoding = "UTF-8")
+```
+
+#### CSV파일 출처 : [https://www.bigdatahub.co.kr/product/view.do?pid=1002160]
+
+
+### 엑셀파일 불러오기 및 일부출력
+
+```{r}
+Data <- read.csv("치킨집 데이터.csv")
+head(Data, n = 6)
+```
+
+### Data 변수에서 필요한 것만 추출
+
+#### 통화건수의 평균과 남녀가 각각 몇명이 있는지 확인
+```{r, eval = FALSE}
+mean(Data$통화건수) # 평균은 13
+table(Data$성별) # 남자는 2957명, 여자는 3169명이 있다.
+```
+
+
+#### 통화건수의 평균보다 높거나 작은 것을 다른 변수에 대입
+```{r}
+Data_1 <- Data[Data$통화건수 >= 13,] # 통화건수가 평균(13) 보다 높은 것을 Data_1에 대입
+Data_2 <- Data[Data$통화건수 <= 13,] # 통화건수가 평균(13) 보다 낮은 것을 Data_2에 대입
+head(Data_1, 3) # 일부 3열 추출
+head(Data_2, 3) # 일부 3열 추출
+```
+
+
+### 통화건수를 오름차순 및 내림차순 정렬
+```{r}
+Data_1 <- Data_1[c(order(-Data_1$통화건수)),] # 데이터 앞에 - 를 붙여서 내림차순으로 정렬
+Data_2 <- Data_2[c(order(Data_2$통화건수)),] # 통화건수를 order()함수 를 이용해서 오름차순으로 정렬
+```
+
+
+```{r}
+head(Data_1, 3) # 출력
+head(Data_2, 3) # 출력
+```
+
+
+### 상위 50개
+```{r}
+Top1_50 <- head(Data_1, 50) # head()를 이용해서 Data_1을 추출한 후, TOP1_50에 대입
+Top2_50 <- head(Data_2, 50) # head()를 이용해서 Data_2를 추출한 후, TOP2_50에 대입
+```
+
+
+### 행 번호가 거슬리니 초기화를 하자
+```{r, eval=FALSE}
+rownames(Data_1) <- NULL # 행 자동정렬
+rownames(Data_2) <- NULL # ''
+rownames(Top1_50) <- NULL # ''
+rownames(Top2_50) <- NULL # ''
+```
+
+
+### 전체를 그래프로 표현하기
+
+#### 가장 높은 순
+
+##### 아래 그래프를 보면 통화건수가 **제일 많은 동네는 봉천동, 송파동, 상계동, 화곡동** 등이 있다.
+```{r}
+ggplot(data = Top1_50, aes(x = 읍면동)) + geom_bar()
+```
+
+#### 가장 낮은 순
+
+##### 아래 그래프를 보면 통화건수가 **제일 낮은 동네는 수서동, 일원동, 개포동, 도곡동** 등이 있다.
+```{r}
+ggplot(data = Top2_50, aes(x = 읍면동)) + geom_bar()
+```
+
+
+## 성별을 기준으로 분할해서 분석하기 
+#### 높은 순
+```{r}
+M <- Top1_50[Top1_50$성별 == "남",] # 성별이 남자인 것만
+W <- Top1_50[Top1_50$성별 == "여",] # 성별이 여자인 것만
+```
+
+#### 낮은 순
+```{r}
+MM <- Top2_50[Top2_50$성별 == "남",] # 성별이 남자인 것만
+WW <- Top2_50[Top2_50$성별 == "여",] # 성별이 여자인 것만
+```
+
+### 그래프로 표현하기
+#### 아래의 그래프를 보면 남성의 통화건수가 **제일 높은 동네는 봉천동** 인 것을 알 수 있다.
+```{r}
+ggplot(data = M, aes(x = 읍면동)) + geom_bar()
+```
+
+#### 아래의 그래프를 보면 여성의 통화건수가 **제일 높은 동네는 봉천동, 송파동, 화곡동** 등이 있다.
+```{r}
+ggplot(data = W, aes(x = 읍면동)) + geom_bar()
+```
+
+#### 아래의 그래프를 보면 남성의 통화건수가 **제일 낮은 동네는 개포동, 도곡동, 수서동** 등이 있다.
+```{r}
+ggplot(data = MM, aes(x = 읍면동)) + geom_bar()
+```
+
+#### 아래의 그래프를 보면 여성의 통화건수가 **제일 낮은 동네는 수서동, 일원동, 대치동** 등이 있다.
+```{r}
+ggplot(data = WW, aes(x = 읍면동)) + geom_bar()
+```
+
